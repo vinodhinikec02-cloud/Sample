@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio | Single Page</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --panel: #151a2f;
+      --text: #e6e8f0;
+      --muted: #a9b0c6;
+      --accent: #6c8cff;
+      --accent-2: #7cf3c5;
+      --chip: #222a4a;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background-color:skyblue;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      backdrop-filter: saturate(140%) blur(10px);
+      background: rgba(10, 12, 24, 0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+    .brand .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 4px rgba(124, 243, 197, 0.08), 0 0 16px rgba(108, 140, 255, .6);
+    }
+
+    .links {
+      display: flex; flex-wrap: wrap; gap: 6px 10px;
+    }
+    .links a {
+      color:white;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      border: 1px solid red;
+      transition: all .2s ease;
+    }
+    .links a:hover {
+      border-color: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* Sections */
+    section {
+      max-width: 1100px;
+      margin: 0px auto;
+      padding: 30px 20px;
+    }
+    .panel {
+      background-color: rgb(200, 193, 185);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    h1, h2, h3 {
+      margin: 0 0 10px 0;
+      line-height: 1.2;
+    }
+    h2{
+      color: white;
+    }
+    .muted { color:white; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+    .hero .title {
+      font-size: clamp(32px, 4vw, 50px);
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+    .hero p { color: var(--muted); margin: 14px 0 22px; }
+    .cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 12px 18px; border-radius: 10px;
+      color: #0b0e1a; font-weight: 700; text-decoration: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 8px 20px rgba(108, 140, 255, .3);
+    }
+    .cta.secondary {
+      color: var(--text); background: transparent;  border: 1px solid rgba(252, 9, 179, 0.14);
+      box-shadow: none;
+    }
+    .cta.secondary:hover{
+      background-color: darkblue;
+    }
+    
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg);} }
+
+    /* About */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .about-card { padding: 18px; background: var(--panel); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; }
+
+    /* Skills */
+    .skills { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .skill {
+      background: var(--chip);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 12px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .meter { height: 8px; background: rgba(255,255,255,.08); border-radius: 6px; overflow: hidden; margin-top: 8px; }
+    .bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: 60%; }
+
+    /* Projects */
+    .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card {
+      background: var(--panel); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; overflow: hidden;
+      display: flex; flex-direction: column; min-height: 220px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 14px 24px rgba(0,0,0,.25); }
+    .thumb { height: 850px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .card-body { padding: 14px; }
+   
+
+    /* Contact */
+    .contact { display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px; }
+    .contact form { background-color:  rgb(200, 193, 185); padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    input, textarea {
+      width: 100%; padding: 10px 12px; border-radius: 10px; color:white;
+      background: #d8eef4; border: 1px solid rgba(255,255,255,.12);
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    .send { margin-top: 8px; }
+    .card-body h3{
+      color: rgb(247, 150, 228);
+    }
+
+    /* Footer */
+    footer { text-align: center; color:white; padding: 30px 20px 60px; }
+
+    /* Utilities */
+    .section-header { display: flex; align-items: end; justify-content: space-between; margin-bottom: 16px; }
+    .section-header h2 { font-size: clamp(22px, 2.6vw, 34px); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { background: var(--chip); color: var(--text); border-radius: 999px; padding: 6px 10px; font-size: 12px; border: 1px solid rgba(255,255,255,.08); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .skills { grid-template-columns: repeat(2, 1fr); }
+      .projects { grid-template-columns: 1fr 1fr; }
+      .contact { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .links { display: none; }
+      .skills { grid-template-columns: 1fr; }
+      .projects { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand"><span class="dot"></span> <h1>My Portfolio</h1></div>
+      <div class="links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Home / Hero -->
+  <section id="home">
+    <div class="panel" style="padding: 26px;">
+      <div class="hero">
+        <div>
+          <div class="chips" aria-hidden="true">
+            <span class="chip">Frontend</span>
+            <span class="chip">UI/UX</span>
+            <span class="chip">Responsive</span>
+          </div>
+          <h1 class="title">Hi, I'm Vinodhini — building clean, fast, and accessible web experiences.</h1>
+          <p style="color: white;">Crafting delightful interfaces with attention to detail. I focus on performance, maintainability, and user-centric design.</p>
+          <div style="display:flex; gap:10px; flex-wrap: wrap;">
+            <a class="cta" href="#projects">View Projects →</a>
+            <a class="cta secondary" href="#contact">Contact Me</a>
+          </div>
+        </div>
+       <div class="profile-card">
+    <img src="scene.jpg" class="photo" alt="Profile Photo">
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="section-header">
+      <h2>About</h2>
+      <span class="muted">Who I am and how I work</span>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>Background</h3>
+        <p class="muted">I am a web developer with experience in building responsive, accessible, and performant sites and apps. I enjoy translating ideas into elegant, reliable interfaces.</p>
+      </div>
+      <div class="about-card">
+        <h3>Principles</h3>
+        <ul class="muted">
+          <li>Design systems focus: scalable and consistent UI</li>
+          <li>Accessibility-first workflows</li>
+          <li>Maintainable CSS with modern layout techniques</li>
+          <li>Continuous improvement via metrics and feedback</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="section-header">
+      <h2>Skills</h2>
+      <span class="muted">Core tools and technologies</span>
+    </div>
+    <div class="skills">
+      <div class="skill">
+        <div style="flex:1;">
+          <strong>HTML</strong>
+          <div class="meter"><div class="bar" style="width: 92%;"></div></div>
+        </div>
+        <span class="chip">100%</span>
+      </div>
+      <div class="skill">
+        <div style="flex:1;">
+          <strong>CSS3 (Flex, Grid)</strong>
+          <div class="meter"><div class="bar" style="width: 90%;"></div></div>
+        </div>
+        <span class="chip">90%</span>
+      </div>
+  
+      <div class="skill">
+        <div style="flex:1;">
+          <strong>Accessibility</strong>
+          <div class="meter"><div class="bar" style="width: 88%;"></div></div>
+        </div>
+        <span class="chip">88%</span>
+      </div>
+      <div class="skill">
+        <div style="flex:1;">
+          <strong>Performance</strong>
+          <div class="meter"><div class="bar" style="width: 84%;"></div></div>
+        </div>
+        <span class="chip">84%</span>
+      </div>
+      <div class="skill">
+        <div style="flex:1;">
+          <strong>UI/UX</strong>
+          <div class="meter"><div class="bar" style="width: 86%;"></div></div>
+        </div>
+        <span class="chip">86%</span>
+      </div>
+      <div class="skill">
+        <div style="flex:1;">
+          <strong>AI Tools</strong>
+          <div class="meter"><div class="bar" style="width: 78%;"></div></div>
+        </div>
+        <span class="chip">78%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="section-header">
+      <h2>Projects</h2>
+      <span class="muted">Selected work</span>
+    </div>
+    <div class="projects">
+      <article class="card">
+        <div class="thumb" role="img" aria-label="Project 1 thumbnail">
+          <img src="Home (1).png"></div>
+        <div class="card-body">
+          <h3>Online Language Learner</h3>
+          <p class="muted">A new language can be learned through online with daily goals.</p>
+          <div class="chips"><span class="chip">Figma</span><span class="chip">Mate</span></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="thumb" role="img" aria-label="Project 2 thumbnail">
+          <img src="Categories.png">
+        </div>
+        <div class="card-body">
+          <h3>Online Grocery</h3>
+          <p class="muted">Grocery items can be purchased through online and it saves out time.</p>
+          <div class="chips"><span class="chip">Figma</span><span class="chip">Stitch</span></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="thumb" role="img" aria-label="Project 3 thumbnail">
+          <img src="dono3.png">
+        </div>
+        <div class="card-body">
+          <h3>Charity</h3>
+          <p class="muted">Charity helps to donate funds and join as volunteer and participate in events.</p>
+          <div class="chips"><span class="chip">Figma</span><span class="chip">Plug-ins</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="section-header">
+      <h2>Contact</h2>
+      <span class="muted">Let's build something</span>
+    </div>
+    <div class="contact">
+      <form onsubmit="event.preventDefault(); alert('Thanks! I will get back to you.');">
+        <div class="row">
+          <div>
+            <label class="muted" for="name">Name</label>
+            <input id="name" name="name" type="text" placeholder="Your name" required />
+          </div>
+          <div>
+            <label class="muted" for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <label class="muted" for="msg">Message</label>
+          <textarea id="msg" name="message" placeholder="Tell me about your project..." required></textarea>
+        </div>
+        <button class="cta send" type="submit">Send Message</button>
+      </form>
+      <div class="panel" style="padding:16px;">
+        <h3>Links</h3>
+        <p class="muted">Prefer email? vinodhinikec02@gmail.com</p>
+        <div class="chips">
+          <a class="chip" href="#home">Top</a>
+          <a class="chip" href="https://www.linkedin.com/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a class="chip" href="https://github.com/" target="_blank" rel="noreferrer noopener">GitHub</a>
+          <a class="chip" href="mailto:you@example.com">Email</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 Vinodhini. All rights reserved.
+  </footer>
+</body>
+</html>
